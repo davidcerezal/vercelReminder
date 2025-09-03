@@ -14,11 +14,15 @@ Aplicación que envía recordatorios automáticos por email y Telegram para:
 
 ## 📋 Configuración paso a paso
 
-### 1. Configurar Resend (Email)
+### 1. Configurar Gmail SMTP (Email)
 
-1. Ve a [Resend.com](https://resend.com) y crea una cuenta gratuita
-2. Crea un API Key en el dashboard
-3. Configura un dominio verificado (o usa el dominio de prueba para testing)
+1. **Habilitar autenticación de 2 factores** en tu cuenta de Gmail
+2. **Generar una App Password**:
+   - Ve a [myaccount.google.com](https://myaccount.google.com)
+   - Seguridad > Verificación en 2 pasos > Contraseñas de aplicaciones
+   - Selecciona "Correo" y "Otro (nombre personalizado)"
+   - Escribe "Recordatorios App" y genera la contraseña
+3. **Guarda la App Password** (16 caracteres sin espacios)
 
 ### 2. Configurar Telegram Bot
 
@@ -39,10 +43,10 @@ Aplicación que envía recordatorios automáticos por email y Telegram para:
 
 2. Edita `.env` con tus credenciales:
    ```env
-   # Resend Email Configuration
-   RESEND_API_KEY=re_tu_api_key_de_resend
-   FROM_EMAIL=recordatorios@tudominio.com
-   TO_EMAIL=tu@email.com
+   # Gmail SMTP Configuration
+   GMAIL_USER=tu_email@gmail.com
+   GMAIL_APP_PASSWORD=abcd efgh ijkl mnop  # App Password de Gmail (sin espacios)
+   TO_EMAIL=destinatario@email.com
 
    # Telegram Bot Configuration
    TELEGRAM_BOT_TOKEN=1234567890:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
@@ -106,8 +110,8 @@ Esto ejecutará el cron job una vez para verificar que todo funciona.
 1. Ve a [Vercel.com](https://vercel.com) y conecta tu cuenta de GitHub
 2. Importa tu repositorio
 3. En **Environment Variables**, agrega todas las variables de tu `.env`:
-   - `RESEND_API_KEY`
-   - `FROM_EMAIL`
+   - `GMAIL_USER`
+   - `GMAIL_APP_PASSWORD`
    - `TO_EMAIL`
    - `TELEGRAM_BOT_TOKEN`
    - `TELEGRAM_CHAT_ID`
@@ -137,6 +141,34 @@ Sigue estos pasos para configurar la ejecución automática:
    - Los workflows se ejecutarán automáticamente
 
 **¡Importante!** GitHub Actions usa horario UTC. El workflow está configurado para las 9:00 AM UTC (10:00 AM CEST, 11:00 AM CET en España).
+
+#### Configurar horarios del cron
+
+Para personalizar cuándo se ejecutan los recordatorios, edita `.github/workflows/daily-cron.yml`:
+
+```yaml
+on:
+  schedule:
+    # Ejecutar a las 9:00 AM UTC todos los días
+    - cron: '0 9 * * *'
+    
+    # Ejemplos de otros horarios:
+    # - cron: '0 8 * * *'    # 8:00 AM UTC (9:00 AM CEST)
+    # - cron: '30 7 * * *'   # 7:30 AM UTC
+    # - cron: '0 9 * * 1-5'  # Solo días laborales (L-V)
+```
+
+**Formato del cron:**
+- `'0 9 * * *'` = minuto hora día mes día_semana
+- Usa [crontab.guru](https://crontab.guru) para generar horarios
+- Recuerda que GitHub Actions usa **horario UTC**
+
+**Conversión de horarios comunes:**
+| Hora local (España) | UTC (invierno) | UTC (verano) | Cron |
+|-------------------|---------------|-------------|------|
+| 8:00 AM | 7:00 AM | 6:00 AM | `'0 6 * * *'` (verano) |
+| 9:00 AM | 8:00 AM | 7:00 AM | `'0 7 * * *'` (verano) |
+| 10:00 AM | 9:00 AM | 8:00 AM | `'0 8 * * *'` (verano) |
 
 ### Otras alternativas gratuitas:
 - [Uptime Robot](https://uptimerobot.com) (llamadas HTTP periódicas)
@@ -209,9 +241,11 @@ El código está modularizado, puedes agregar fácilmente:
 - Verifica el `TELEGRAM_CHAT_ID`
 - Asegúrate de haber enviado al menos un mensaje al bot
 
-### Error: "Resend API key invalid"
-- Verifica tu `RESEND_API_KEY`
-- Comprueba que tu dominio esté verificado en Resend
+### Error: "Invalid login" o problemas de autenticación Gmail
+- Verifica que hayas habilitado la autenticación de 2 factores en Gmail
+- Asegúrate de usar una App Password, no tu contraseña normal
+- Verifica que `GMAIL_USER` sea tu dirección de Gmail completa
+- La `GMAIL_APP_PASSWORD` no debe tener espacios
 
 ### Los cron jobs no se ejecutan en Vercel
 - Los cron jobs requieren plan Pro en Vercel
