@@ -1,0 +1,28 @@
+{
+  "name": "reminder-app",
+  "version": "1.0.0",
+  "description": "Automated reminder app for work hours and birthdays via email and Telegram",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node api/cron.js",
+    "build": "echo 'No build step required'",
+    "start": "node api/cron.js"
+  },
+  "dependencies": {
+    "resend": "^3.2.0",
+    "node-telegram-bot-api": "^0.66.0",
+    "node-cron": "^3.0.3"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "keywords": [
+    "reminder",
+    "email",
+    "telegram",
+    "vercel",
+    "automation"
+  ],
+  "author": "",
+  "license": "MIT"
+}

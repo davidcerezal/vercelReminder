@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 Estado de Recordatorios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #4f46e5, #06b6d4);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8fafc;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-card.success h3 { color: #10b981; }
+        .stat-card.error h3 { color: #ef4444; }
+        .stat-card.info h3 { color: #3b82f6; }
+
+        .content {
+            padding: 30px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .last-update {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: linear-gradient(45deg, #1e293b, #334155);
+            color: white;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        tr:hover {
+            background-color: #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.error {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .status.running {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status.success .status-icon { background: #10b981; }
+        .status.error .status-icon { background: #ef4444; }
+        .status.running .status-icon { background: #3b82f6; }
+
+        .message {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Estado de Recordatorios</h1>
+            <p>Monitor de ejecuciones de cron jobs</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card success">
+                <h3 id="successCount">-</h3>
+                <p>Éxitos</p>
+            </div>
+            <div class="stat-card error">
+                <h3 id="errorCount">-</h3>
+                <p>Errores</p>
+            </div>
+            <div class="stat-card info">
+                <h3 id="totalCount">-</h3>
+                <p>Total</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="controls">
+                <button class="refresh-btn" onclick="loadCronLogs()">
+                    <span>🔄</span> Actualizar
+                </button>
+                <div class="last-update">
+                    Última actualización: <span id="lastUpdate">-</span>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="cronTable">
+                    <thead>
+                        <tr>
+                            <th>📅 Fecha</th>
+                            <th>⏰ Hora</th>
+                            <th>📊 Estado</th>
+                            <th>🎯 Tipo</th>
+                            <th>📝 Mensaje</th>
+                            <th>⏱️ Duración</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cronTableBody">
+                        <tr>
+                            <td colspan="6" class="loading">
+                                <div class="spinner"></div>
+                                Cargando datos...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cronLogs = [];
+
+        async function loadCronLogs() {
+            const tableBody = document.getElementById('cronTableBody');
+            const lastUpdateElement = document.getElementById('lastUpdate');
+            
+            // Show loading
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="loading">
+                        <div class="spinner"></div>
+                        Cargando datos...
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const response = await fetch('/api/logs');
+                if (!response.ok) {
+                    throw new Error('Error al cargar los logs');
+                }
+                
+                const data = await response.json();
+                cronLogs = data.logs || [];
+                
+                updateTable();
+                updateStats();
+                
+                lastUpdateElement.textContent = new Date().toLocaleString('es-ES');
+            } catch (error) {
+                console.error('Error loading cron logs:', error);
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="no-data">
+                            ❌ Error al cargar los datos: ${error.message}
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function updateTable() {
+            const tableBody = document.getElementById('cronTableBody');
+            
+            if (cronLogs.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="no-data">
+                            📭 No hay ejecuciones registradas
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const rows = cronLogs.map(log => {
+                const date = new Date(log.timestamp);
+                const statusClass = log.success ? 'success' : 'error';
+                const statusText = log.success ? 'Éxito' : 'Error';
+                const statusIcon = log.success ? '✅' : '❌';
+                
+                return `
+                    <tr>
+                        <td>${date.toLocaleDateString('es-ES')}</td>
+                        <td>${date.toLocaleTimeString('es-ES')}</td>
+                        <td>
+                            <span class="status ${statusClass}">
+                                <span class="status-icon"></span>
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td>${getExecutionType(log)}</td>
+                        <td>
+                            <div class="message" title="${log.message}">
+                                ${log.message}
+                            </div>
+                        </td>
+                        <td>${log.duration || '-'}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            tableBody.innerHTML = rows;
+        }
+
+        function getExecutionType(log) {
+            if (log.message.includes('birthday') || log.message.includes('cumpleaños')) {
+                return '🎂 Cumpleaños';
+            } else if (log.message.includes('work hours') || log.message.includes('horas')) {
+                return '⏰ Horas';
+            } else if (log.message.includes('No reminders')) {
+                return '💤 Sin actividad';
+            } else {
+                return '🔄 General';
+            }
+        }
+
+        function updateStats() {
+            const successCount = cronLogs.filter(log => log.success).length;
+            const errorCount = cronLogs.filter(log => !log.success).length;
+            const totalCount = cronLogs.length;
+
+            document.getElementById('successCount').textContent = successCount;
+            document.getElementById('errorCount').textContent = errorCount;
+            document.getElementById('totalCount').textContent = totalCount;
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadCronLogs);
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadCronLogs, 30000);
+    </script>
+</body>
+</html>

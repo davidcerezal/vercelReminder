@@ -1,0 +1,16 @@
+{
+  "functions": {
+    "api/cron.js": {
+      "maxDuration": 60
+    },
+    "api/logs.js": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/public/index.html"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "logs": [
+    {
+      "id": "1725350400000",
+      "timestamp": "2025-09-03T09:00:00.000Z",
+      "success": true,
+      "message": "No reminders to send today",
+      "duration": "145ms",
+      "details": null,
+      "type": "no_activity"
+    },
+    {
+      "id": "1725264000000", 
+      "timestamp": "2025-09-02T09:00:00.000Z",
+      "success": true,
+      "message": "Birthday message sent for Alicia",
+      "duration": "234ms",
+      "details": null,
+      "type": "birthday"
+    },
+    {
+      "id": "1725177600000",
+      "timestamp": "2025-09-01T09:00:00.000Z", 
+      "success": false,
+      "message": "Error: Failed to send work hours reminder email",
+      "duration": "1567ms",
+      "details": null,
+      "type": "general"
+    }
+  ],
+  "lastUpdated": "2025-09-03T09:00:00.000Z"
+}

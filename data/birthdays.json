@@ -1,0 +1,17 @@
+{
+  "birthdays": [
+    {
+      "name": "Alicia",
+      "date": "29/04",
+      "description": "Ejemplo: 29 de abril - Alicia"
+    }
+  ],
+  "_instructions": {
+    "format": "Add birthdays in the format 'DD/MM' or 'DD-MM'",
+    "example": {
+      "name": "Nombre de la persona",
+      "date": "DD/MM",
+      "description": "Descripción opcional"
+    }
+  }
+}

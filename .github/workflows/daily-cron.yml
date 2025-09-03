@@ -1,0 +1,30 @@
+name: Daily Cron Job
+on:
+  schedule:
+    - cron: '0 9 * * *' # 9:00 AM UTC daily (10:00 AM CEST, 11:00 AM CET)
+  workflow_dispatch: # Permite ejecución manual
+
+jobs:
+  run-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Reminder API
+        run: |
+          response=$(curl -s -w "HTTP_CODE:%{http_code}" \
+            -X POST ${{ secrets.VERCEL_APP_URL }}/api/cron \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "User-Agent: GitHub-Actions-Cron/1.0")
+          
+          http_code=$(echo "$response" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)
+          body=$(echo "$response" | sed 's/HTTP_CODE:[0-9]*$//')
+          
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Cron job executed successfully"
+          else
+            echo "❌ Cron job failed with status $http_code"
+            exit 1
+          fi
