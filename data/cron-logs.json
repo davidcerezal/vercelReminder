@@ -1,32 +1,50 @@
 {
   "logs": [
     {
-      "id": "1725350400000",
-      "timestamp": "2025-09-03T09:00:00.000Z",
+      "id": "1757324722551",
+      "timestamp": "2025-09-08T09:45:22.551Z",
       "success": true,
       "message": "No reminders to send today",
-      "duration": "145ms",
-      "details": null,
+      "duration": "100ms",
+      "details": {
+        "type": "no_activity"
+      },
       "type": "no_activity"
     },
     {
-      "id": "1725264000000", 
-      "timestamp": "2025-09-02T09:00:00.000Z",
+      "id": "1757324722543",
+      "timestamp": "2025-09-08T09:45:22.543Z",
       "success": true,
-      "message": "Birthday message sent for Alicia",
-      "duration": "234ms",
-      "details": null,
+      "message": "TEST: Mensaje de cumpleaños para Juan enviado correctamente",
+      "duration": "789ms",
+      "details": {
+        "type": "test_birthday",
+        "name": "Juan"
+      },
       "type": "birthday"
     },
     {
-      "id": "1725177600000",
-      "timestamp": "2025-09-01T09:00:00.000Z", 
+      "id": "1757324722535",
+      "timestamp": "2025-09-08T09:45:22.535Z",
       "success": false,
-      "message": "Error: Failed to send work hours reminder email",
-      "duration": "1567ms",
-      "details": null,
+      "message": "TEST: Error al enviar telegram",
+      "duration": "456ms",
+      "details": {
+        "type": "test_telegram_work"
+      },
+      "type": "general"
+    },
+    {
+      "id": "1757324722527",
+      "timestamp": "2025-09-08T09:45:22.527Z",
+      "success": true,
+      "message": "TEST: Email enviado correctamente",
+      "duration": "123ms",
+      "details": {
+        "type": "test_email"
+      },
       "type": "general"
     }
   ],
-  "lastUpdated": "2025-09-03T09:00:00.000Z"
+  "lastUpdated": "2025-09-08T09:45:22.551Z"
 }

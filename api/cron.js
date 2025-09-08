@@ -2,7 +2,7 @@ const { isLastWorkingDayOfMonth } = require('../lib/dateUtils');
 const { getTodaysBirthdays } = require('../lib/birthdays');
 const emailService = require('../lib/email');
 const telegramService = require('../lib/telegram');
-const { logExecution } = require('../lib/logger');
+const { logExecution } = require('../lib/logger-hybrid');
 
 async function handleCronJob(req, res) {
   const startTime = Date.now();
@@ -42,16 +42,32 @@ async function handleCronJob(req, res) {
       const emailSent = await emailService.sendWorkHoursReminder();
       if (emailSent) {
         results.push('Work hours reminder email sent successfully');
+        await logExecution(true, 'Work hours reminder email sent successfully', { 
+          duration: `${Date.now() - startTime}ms`,
+          additionalInfo: { type: 'work_hours_email' }
+        });
       } else {
         results.push('Failed to send work hours reminder email');
+        await logExecution(false, 'Failed to send work hours reminder email', { 
+          duration: `${Date.now() - startTime}ms`,
+          additionalInfo: { type: 'work_hours_email' }
+        });
       }
       
       // Send Telegram reminder
       const telegramSent = await telegramService.sendWorkHoursReminder();
       if (telegramSent) {
         results.push('Work hours reminder Telegram message sent successfully');
+        await logExecution(true, 'Work hours reminder Telegram message sent successfully', { 
+          duration: `${Date.now() - startTime}ms`,
+          additionalInfo: { type: 'work_hours_telegram' }
+        });
       } else {
         results.push('Failed to send work hours reminder Telegram message');
+        await logExecution(false, 'Failed to send work hours reminder Telegram message', { 
+          duration: `${Date.now() - startTime}ms`,
+          additionalInfo: { type: 'work_hours_telegram' }
+        });
       }
     }
     
@@ -65,13 +81,25 @@ async function handleCronJob(req, res) {
       
       if (birthdayMessageSent) {
         results.push(`Birthday message sent for ${birthday.name}`);
+        await logExecution(true, `Birthday message sent for ${birthday.name}`, { 
+          duration: `${Date.now() - startTime}ms`,
+          additionalInfo: { type: 'birthday', name: birthday.name }
+        });
       } else {
         results.push(`Failed to send birthday message for ${birthday.name}`);
+        await logExecution(false, `Failed to send birthday message for ${birthday.name}`, { 
+          duration: `${Date.now() - startTime}ms`,
+          additionalInfo: { type: 'birthday', name: birthday.name }
+        });
       }
     }
     
     if (results.length === 0) {
       results.push('No reminders to send today');
+      await logExecution(true, 'No reminders to send today', { 
+        duration: `${Date.now() - startTime}ms`,
+        additionalInfo: { type: 'no_activity' }
+      });
     }
     
     const endTime = Date.now();
@@ -80,11 +108,13 @@ async function handleCronJob(req, res) {
     
     console.log('Cron job completed:', results);
     
-    // Log the execution
-    await logExecution(true, summary, { 
-      duration: duration,
-      additionalInfo: { resultsCount: results.length, details: results }
-    });
+    // Log the final summary (only if there were multiple actions)
+    if (results.length > 1) {
+      await logExecution(true, `Cron job completed: ${summary}`, { 
+        duration: duration,
+        additionalInfo: { resultsCount: results.length, details: results, type: 'summary' }
+      });
+    }
     
     res.status(200).json({
       success: true,

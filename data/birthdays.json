@@ -1,9 +1,84 @@
 {
   "birthdays": [
+ {
+      "name": "Nora",
+      "date": "01/01",
+      "description": "1 de enero - Nora"
+    },
     {
-      "name": "Alicia",
-      "date": "29/04",
-      "description": "Ejemplo: 29 de abril - Alicia"
+      "name": "Nuria Imanol",
+      "date": "09/01",
+      "description": "9 de enero - Nuria Imanol"
+    },
+    {
+      "name": "Rober",
+      "date": "10/01",
+      "description": "10 de enero - Rober"
+    },
+    {
+      "name": "Juan",
+      "date": "10/03",
+      "description": "10 de marzo - Juan"
+    },
+    {
+      "name": "Javi",
+      "date": "12/03",
+      "description": "12 de marzo - Javi"
+    },
+    {
+      "name": "Nuria Imanol",
+      "date": "12/03",
+      "description": "12 de marzo - Nuria Imanol"
+    },
+    {
+      "name": "Nuria",
+      "date": "03/05",
+      "description": "3 de mayo - Nuria Imanol"
+    },
+    {
+      "name": "Nerea",
+      "date": "04/05",
+      "description": "4 de mayo - Nerea"
+    },
+    {
+      "name": "Irati",
+      "date": "04/05",
+      "description": "4 de mayo - Irati"
+    },
+    {
+      "name": "Carmelo",
+      "date": "04/05",
+      "description": "4 de mayo - Carmelo"
+    },
+    {
+      "name": "Nuria",
+      "date": "11/05",
+      "description": "11 de mayo - Nuria"
+    },
+    {
+      "name": "Xabi",
+      "date": "07/06",
+      "description": "7 de junio - Xabi"
+    },
+    {
+      "name": "Alvaro",
+      "date": "11/07",
+      "description": "11 de julio - Alvaro"
+    },
+    {
+      "name": "María",
+      "date": "02/09",
+      "description": "2 de septiembre - María"
+    },
+    {
+      "name": "Markel",
+      "date": "04/12",
+      "description": "4 de diciembre - Markelito"
+    },
+    {
+      "name": "Roberto",
+      "date": "06/12",
+      "description": "6 de diciembre - Roberto"
     }
   ],
   "_instructions": {

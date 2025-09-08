@@ -11,7 +11,8 @@
   "dependencies": {
     "nodemailer": "^6.9.0",
     "node-telegram-bot-api": "^0.66.0",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "@vercel/kv": "^3.0.0"
   },
   "engines": {
     "node": "22.x"

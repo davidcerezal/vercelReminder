@@ -1,4 +1,4 @@
-const { readLogs } = require('../lib/logger');
+const { readLogs } = require('../lib/logger-hybrid');
 
 async function handleLogsRequest(req, res) {
   try {

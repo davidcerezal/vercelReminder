@@ -1,5 +1,6 @@
 const { sendWorkHoursReminder: sendEmailReminder } = require('../lib/email');
 const { sendWorkHoursReminder: sendTelegramReminder, sendBirthdayMessage } = require('../lib/telegram');
+const { logExecution } = require('../lib/logger-hybrid');
 
 module.exports = async (req, res) => {
   // Set CORS headers
@@ -34,6 +35,15 @@ module.exports = async (req, res) => {
         success: emailResult,
         message: emailResult ? 'Email enviado correctamente' : 'Error al enviar email'
       };
+      
+      // Log the test result
+      await logExecution(emailResult, 
+        emailResult ? 'TEST: Email enviado correctamente' : 'TEST: Error al enviar email', 
+        { 
+          duration: '0ms',
+          additionalInfo: { type: 'test_email' }
+        }
+      );
     }
 
     // Test Telegram work hours reminder
@@ -44,6 +54,15 @@ module.exports = async (req, res) => {
         success: telegramResult,
         message: telegramResult ? 'Mensaje de Telegram (horas) enviado correctamente' : 'Error al enviar mensaje de Telegram (horas)'
       };
+      
+      // Log the test result
+      await logExecution(telegramResult, 
+        telegramResult ? 'TEST: Mensaje de Telegram (horas) enviado correctamente' : 'TEST: Error al enviar mensaje de Telegram (horas)', 
+        { 
+          duration: '0ms',
+          additionalInfo: { type: 'test_telegram_work' }
+        }
+      );
     }
 
     // Test Telegram birthday message
@@ -54,6 +73,15 @@ module.exports = async (req, res) => {
         success: birthdayResult,
         message: birthdayResult ? `Mensaje de cumpleaños para ${name} enviado correctamente` : `Error al enviar mensaje de cumpleaños para ${name}`
       };
+      
+      // Log the test result
+      await logExecution(birthdayResult, 
+        birthdayResult ? `TEST: Mensaje de cumpleaños para ${name} enviado correctamente` : `TEST: Error al enviar mensaje de cumpleaños para ${name}`, 
+        { 
+          duration: '0ms',
+          additionalInfo: { type: 'test_birthday', name: name }
+        }
+      );
     }
 
     // Check if all tests passed
