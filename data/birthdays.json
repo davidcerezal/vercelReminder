@@ -1,89 +1,269 @@
 {
   "birthdays": [
- {
+    {
       "name": "Nora",
       "date": "01/01",
       "description": "1 de enero - Nora"
     },
     {
-      "name": "Nuria Imanol",
-      "date": "09/01",
-      "description": "9 de enero - Nuria Imanol"
+      "name": "Dani",
+      "date": "05/01",
+      "description": "5 de enero - Dani"
     },
     {
-      "name": "Rober",
-      "date": "10/01",
-      "description": "10 de enero - Rober"
+      "name": "Conchi",
+      "date": "14/01",
+      "description": "14 de enero - Conchi"
     },
     {
-      "name": "Juan",
-      "date": "10/03",
-      "description": "10 de marzo - Juan"
-    },
-    {
-      "name": "Javi",
-      "date": "12/03",
-      "description": "12 de marzo - Javi"
-    },
-    {
-      "name": "Nuria Imanol",
-      "date": "12/03",
-      "description": "12 de marzo - Nuria Imanol"
-    },
-    {
-      "name": "Nuria",
-      "date": "03/05",
-      "description": "3 de mayo - Nuria Imanol"
-    },
-    {
-      "name": "Nerea",
-      "date": "04/05",
-      "description": "4 de mayo - Nerea"
-    },
-    {
-      "name": "Irati",
-      "date": "04/05",
-      "description": "4 de mayo - Irati"
-    },
-    {
-      "name": "Carmelo",
-      "date": "04/05",
-      "description": "4 de mayo - Carmelo"
-    },
-    {
-      "name": "Nuria",
-      "date": "11/05",
-      "description": "11 de mayo - Nuria"
-    },
-    {
-      "name": "Xabi",
-      "date": "07/06",
-      "description": "7 de junio - Xabi"
+      "name": "Leire",
+      "date": "16/01",
+      "description": "16 de enero - Leire"
     },
     {
       "name": "Alvaro",
-      "date": "11/07",
-      "description": "11 de julio - Alvaro"
+      "date": "17/01",
+      "description": "17 de enero - Alvaro"
+    },
+    {
+      "name": "Ventura",
+      "date": "27/01",
+      "description": "27 de enero - Ventura"
     },
     {
       "name": "María",
-      "date": "02/09",
-      "description": "2 de septiembre - María"
+      "date": "09/02",
+      "description": "9 de febrero - María"
     },
-     {
-      "name": "Prueba",
-      "date": "19/09",
-      "description": "4 de diciembre - Markelito"
+    {
+      "name": "Felipa",
+      "date": "21/02",
+      "description": "21 de febrero - Felipa"
+    },
+    {
+      "name": "Olaia",
+      "date": "24/02",
+      "description": "24 de febrero - Olaia"
+    },
+    {
+      "name": "Jesus",
+      "date": "24/02",
+      "description": "24 de febrero - Jesus"
+    },
+    {
+      "name": "Dani Madrid",
+      "date": "28/02",
+      "description": "28 de febrero - Dani Madrid"
+    },
+    {
+      "name": "David G.",
+      "date": "03/03",
+      "description": "3 de marzo - David G."
+    },
+    {
+      "name": "Nerea",
+      "date": "05/03",
+      "description": "5 de marzo - Nerea"
+    },
+    {
+      "name": "Ander",
+      "date": "25/03",
+      "description": "25 de marzo - Ander"
+    },
+    {
+      "name": "Barkala",
+      "date": "26/03",
+      "description": "26 de marzo - Barkala"
+    },
+    {
+      "name": "Sandra María",
+      "date": "29/03",
+      "description": "29 de marzo - Sandra María"
+    },
+    {
+      "name": "Uxue",
+      "date": "30/03",
+      "description": "30 de marzo - Uxue"
+    },
+    {
+      "name": "Fer",
+      "date": "30/03",
+      "description": "30 de marzo - Fer"
+    },
+    {
+      "name": "Arantxa",
+      "date": "30/03",
+      "description": "30 de marzo - Arantxa"
+    },
+    {
+      "name": "Jorge",
+      "date": "31/03",
+      "description": "31 de marzo - Jorge"
+    },
+    {
+      "name": "Irati",
+      "date": "05/04",
+      "description": "5 de abril - Irati"
     },
     {
       "name": "Markel",
-      "date": "04/12",
-      "description": "4 de diciembre - Markelito"
+      "date": "12/04",
+      "description": "12 de abril - Markel"
+    },
+    {
+      "name": "Luci",
+      "date": "19/04",
+      "description": "19 de abril - Luci"
+    },
+    {
+      "name": "Alfredo",
+      "date": "07/05",
+      "description": "7 de mayo - Alfredo"
+    },
+    {
+      "name": "Jose María",
+      "date": "13/05",
+      "description": "13 de mayo - Jose María"
+    },
+    {
+      "name": "Jonito",
+      "date": "22/05",
+      "description": "22 de mayo - Jonito"
+    },
+    {
+      "name": "Mattieu Molan",
+      "date": "03/06",
+      "description": "3 de junio - Mattieu Molan"
     },
     {
       "name": "Roberto",
-      "date": "06/12",
-      "description": "6 de diciembre - Roberto"
+      "date": "12/06",
+      "description": "12 de junio - Roberto"
+    },
+    {
+      "name": "Ion",
+      "date": "30/06",
+      "description": "30 de junio - Ion"
+    },
+    {
+      "name": "Xavi",
+      "date": "06/07",
+      "description": "6 de julio - Xavi"
+    },
+    {
+      "name": "Ander",
+      "date": "08/07",
+      "description": "8 de julio - Ander"
+    },
+    {
+      "name": "Saúl",
+      "date": "16/07",
+      "description": "16 de julio - Saúl"
+    },
+    {
+      "name": "Miguel Madrid",
+      "date": "17/07",
+      "description": "17 de julio - Miguel Madrid"
+    },
+    {
+      "name": "Carmelo",
+      "date": "18/07",
+      "description": "18 de julio - Carmelo"
+    },
+    {
+      "name": "Javi Cea",
+      "date": "15/08",
+      "description": "15 de agosto - Javi Cea"
+    },
+    {
+      "name": "Maribel",
+      "date": "24/08",
+      "description": "24 de agosto - Maribel"
+    },
+    {
+      "name": "Imanol",
+      "date": "30/08",
+      "description": "30 de agosto - Imanol"
+    },
+    {
+      "name": "Ama",
+      "date": "30/08",
+      "description": "30 de agosto - Ama"
+    },
+    {
+      "name": "Jose",
+      "date": "12/09",
+      "description": "12 de septiembre - Jose"
+    },
+    {
+      "name": "Mertxe",
+      "date": "13/09",
+      "description": "13 de septiembre - Mertxe"
+    },
+    {
+      "name": "Javier",
+      "date": "28/09",
+      "description": "28 de septiembre - Javier"
+    },
+    {
+      "name": "Juan",
+      "date": "03/10",
+      "description": "3 de octubre - Juan"
+    },
+    {
+      "name": "Brais",
+      "date": "06/10",
+      "description": "6 de octubre - Brais"
+    },
+    {
+      "name": "Ruben",
+      "date": "12/10",
+      "description": "12 de octubre - Ruben"
+    },
+    {
+      "name": "Eneko",
+      "date": "14/10",
+      "description": "14 de octubre - Eneko"
+    },
+    {
+      "name": "Carmen",
+      "date": "03/11",
+      "description": "3 de noviembre - Carmen"
+    },
+    {
+      "name": "Jonathan Patricio",
+      "date": "04/11",
+      "description": "4 de noviembre - Jonathan Patricio"
+    },
+    {
+      "name": "Nuria",
+      "date": "05/11",
+      "description": "5 de noviembre - Nuria"
+    },
+    {
+      "name": "Alvaro",
+      "date": "07/11",
+      "description": "7 de noviembre - Alvaro"
+    },
+    {
+      "name": "Eva",
+      "date": "14/11",
+      "description": "14 de noviembre - Eva"
+    },
+    {
+      "name": "Sergy Perals",
+      "date": "02/12",
+      "description": "2 de diciembre - Sergy Perals"
+    },
+    {
+      "name": "Javi",
+      "date": "03/12",
+      "description": "3 de diciembre - Javi"
+    },
+    {
+      "name": "Bravo",
+      "date": "11/12",
+      "description": "11 de diciembre - Bravo"
     }
   ],
   "_instructions": {
@@ -93,5 +273,60 @@
       "date": "DD/MM",
       "description": "Descripción opcional"
     }
-  }
+  },
+  "_commented_list": [
+    "1 de enero - Nora",
+    "5 de enero - Dani",
+    "14 de enero - Conchi",
+    "16 de enero - Leire",
+    "17 de enero - Alvaro",
+    "27 de enero - Ventura",
+    "9 de febrero - María",
+    "21 de febrero - Felipa",
+    "24 de febrero - Olaia",
+    "24 de febrero - Jesus",
+    "28 de febrero - Dani Madrid",
+    "3 de marzo - David G.",
+    "5 de marzo - Nerea",
+    "25 de marzo - Ander",
+    "26 de marzo - Barkala",
+    "29 de marzo - Sandra María",
+    "30 de marzo - Uxue",
+    "30 de marzo - Fer",
+    "30 de marzo - Arantxa",
+    "31 de marzo - Jorge",
+    "5 de abril - Irati",
+    "12 de abril - Markel",
+    "19 de abril - Luci",
+    "7 de mayo - Alfredo",
+    "13 de mayo - Jose María",
+    "22 de mayo - Jonito",
+    "3 de junio - Mattieu Molan",
+    "12 de junio - Roberto",
+    "30 de junio - Ion",
+    "6 de julio - Xavi",
+    "8 de julio - Ander",
+    "16 de julio - Saúl",
+    "17 de julio - Miguel Madrid",
+    "18 de julio - Carmelo",
+    "15 de agosto - Javi Cea",
+    "24 de agosto - Maribel",
+    "30 de agosto - Imanol",
+    "30 de agosto - Ama",
+    "12 de septiembre - Jose",
+    "13 de septiembre - Mertxe",
+    "28 de septiembre - Javier",
+    "3 de octubre - Juan",
+    "6 de octubre - Brais",
+    "12 de octubre - Ruben",
+    "14 de octubre - Eneko",
+    "3 de noviembre - Carmen",
+    "4 de noviembre - Jonathan Patricio",
+    "5 de noviembre - Nuria",
+    "7 de noviembre - Alvaro",
+    "14 de noviembre - Eva",
+    "2 de diciembre - Sergy Perals",
+    "3 de diciembre - Javi",
+    "11 de diciembre - Bravo"
+  ]
 }
