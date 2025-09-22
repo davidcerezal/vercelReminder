@@ -33,7 +33,18 @@ async function handleCronJob(req, res) {
   
   try {
     const results = [];
-    
+    const today = new Date();
+
+    // Send daily confirmation message first
+    const dailyConfirmationSent = await telegramService.sendDailyConfirmation(today);
+    if (dailyConfirmationSent) {
+      results.push('Daily confirmation message sent');
+      await logExecution(true, 'Daily confirmation message sent', {
+        duration: `${Date.now() - startTime}ms`,
+        additionalInfo: { type: 'daily_confirmation', date: today.toISOString() }
+      });
+    }
+
     // Check if today is the last working day of the month
     if (isLastWorkingDayOfMonth()) {
       console.log('Today is the last working day of the month - sending work hours reminder');
@@ -72,8 +83,18 @@ async function handleCronJob(req, res) {
     }
     
     // Check for birthdays
-    const todaysBirthdays = await getTodaysBirthdays();
+    console.log(`DEBUG: Current date for birthday check: ${today.toISOString()}`);
+    console.log(`DEBUG: Local date: ${today.toLocaleDateString('es-ES')}`);
+    console.log(`DEBUG: Day/Month format: ${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}`);
+
+    const todaysBirthdays = await getTodaysBirthdays(today);
     console.log(`Found ${todaysBirthdays.length} birthdays today`);
+
+    if (todaysBirthdays.length > 0) {
+      console.log('Today\'s birthdays:', todaysBirthdays.map(b => `${b.name} (${b.date})`));
+    } else {
+      console.log('DEBUG: No birthdays found for today');
+    }
     
     for (const birthday of todaysBirthdays) {
       console.log(`Sending birthday message for ${birthday.name}`);

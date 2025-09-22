@@ -1,6 +1,29 @@
 {
   "logs": [
     {
+      "id": "1758524698617",
+      "timestamp": "2025-09-22T07:04:58.617Z",
+      "success": false,
+      "message": "Failed to send birthday message for Prueba Test",
+      "duration": "17ms",
+      "details": {
+        "type": "birthday",
+        "name": "Prueba Test"
+      },
+      "type": "birthday"
+    },
+    {
+      "id": "1758524682352",
+      "timestamp": "2025-09-22T07:04:42.352Z",
+      "success": true,
+      "message": "No reminders to send today",
+      "duration": "19ms",
+      "details": {
+        "type": "no_activity"
+      },
+      "type": "no_activity"
+    },
+    {
       "id": "1757324722551",
       "timestamp": "2025-09-08T09:45:22.551Z",
       "success": true,
@@ -46,5 +69,5 @@
       "type": "general"
     }
   ],
-  "lastUpdated": "2025-09-08T09:45:22.551Z"
+  "lastUpdated": "2025-09-22T07:04:58.617Z"
 }
