@@ -98,17 +98,17 @@ async function handleCronJob(req, res) {
     
     for (const birthday of todaysBirthdays) {
       console.log(`Sending birthday message for ${birthday.name}`);
-      const birthdayMessageSent = await telegramService.sendBirthdayMessage(birthday.name);
-      
+      const birthdayMessageSent = await telegramService.sendBirthdayMessage(birthday.name, birthday.date);
+
       if (birthdayMessageSent) {
         results.push(`Birthday message sent for ${birthday.name}`);
-        await logExecution(true, `Birthday message sent for ${birthday.name}`, { 
+        await logExecution(true, `Birthday message sent for ${birthday.name}`, {
           duration: `${Date.now() - startTime}ms`,
           additionalInfo: { type: 'birthday', name: birthday.name }
         });
       } else {
         results.push(`Failed to send birthday message for ${birthday.name}`);
-        await logExecution(false, `Failed to send birthday message for ${birthday.name}`, { 
+        await logExecution(false, `Failed to send birthday message for ${birthday.name}`, {
           duration: `${Date.now() - startTime}ms`,
           additionalInfo: { type: 'birthday', name: birthday.name }
         });
