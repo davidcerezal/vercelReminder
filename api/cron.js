@@ -35,16 +35,6 @@ async function handleCronJob(req, res) {
     const results = [];
     const today = new Date();
 
-    // Send daily confirmation message first
-    const dailyConfirmationSent = await telegramService.sendDailyConfirmation(today);
-    if (dailyConfirmationSent) {
-      results.push('Daily confirmation message sent');
-      await logExecution(true, 'Daily confirmation message sent', {
-        duration: `${Date.now() - startTime}ms`,
-        additionalInfo: { type: 'daily_confirmation', date: today.toISOString() }
-      });
-    }
-
     // Check if today is the last working day of the month
     if (isLastWorkingDayOfMonth()) {
       console.log('Today is the last working day of the month - sending work hours reminder');
