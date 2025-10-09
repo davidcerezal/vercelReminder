@@ -5,12 +5,25 @@
     },
     "api/logs.js": {
       "maxDuration": 30
+    },
+    "api/daily-checkin.js": {
+      "maxDuration": 30
+    },
+    "api/daily-checkin-cron.js": {
+      "maxDuration": 30
+    },
+    "api/daily-checkin-page.js": {
+      "maxDuration": 30
     }
   },
   "rewrites": [
     {
       "source": "/",
       "destination": "/public/index.html"
+    },
+    {
+      "source": "/daily-checkin",
+      "destination": "/api/daily-checkin-page"
     }
   ]
 }

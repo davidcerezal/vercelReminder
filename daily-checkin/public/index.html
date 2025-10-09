@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Check-In</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #4f46e5, #06b6d4);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+            color: #334155;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        /* Calendar Styles */
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-controls button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .calendar-controls button:hover {
+            background: #4338ca;
+        }
+
+        .calendar-controls span {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #334155;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.85rem;
+            padding: 8px 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.05);
+        }
+
+        .calendar-day.empty {
+            cursor: default;
+        }
+
+        .calendar-day.empty:hover {
+            transform: none;
+        }
+
+        .calendar-day.success {
+            background: #dcfce7;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        .calendar-day.error {
+            background: #fef2f2;
+            color: #991b1b;
+            font-weight: 600;
+        }
+
+        .calendar-day.no-data {
+            background: #e2e8f0;
+            color: #64748b;
+        }
+
+        .calendar-day.selected {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .calendar-day.today {
+            border-color: #f59e0b;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 500;
+        }
+
+        .date-display {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #4f46e5;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .toggle-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .toggle-item:hover {
+            border-color: #cbd5e1;
+        }
+
+        .toggle-item.active {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .toggle-label {
+            font-size: 1rem;
+            color: #334155;
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #cbd5e1;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #10b981;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            top: 3px;
+            left: 3px;
+            transition: left 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 27px;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            color: #166534;
+            display: block;
+        }
+
+        .message.error {
+            background: #fef2f2;
+            color: #991b1b;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Daily Check-In</h1>
+            <p>Registra tu progreso diario</p>
+        </div>
+
+        <div class="content">
+            <!-- Calendar Section -->
+            <div class="section">
+                <h2>📅 Calendario</h2>
+                <div class="calendar-controls">
+                    <button id="prevMonth">← Anterior</button>
+                    <span id="currentMonth">-</span>
+                    <button id="nextMonth">Siguiente →</button>
+                </div>
+                <div class="calendar" id="calendar">
+                    <!-- Calendar will be generated here -->
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="section">
+                <h2>✏️ Registro Diario</h2>
+                <div class="date-display" id="selectedDate">-</div>
+
+                <div class="toggle-group">
+                    <div class="toggle-item" id="toggle-eaten-well">
+                        <span class="toggle-label">🍎 Has comido bien</span>
+                        <div class="toggle-switch" data-field="eaten_well"></div>
+                    </div>
+
+                    <div class="toggle-item" id="toggle-did-sport">
+                        <span class="toggle-label">🏃 Has hecho deporte</span>
+                        <div class="toggle-switch" data-field="did_sport"></div>
+                    </div>
+
+                    <div class="toggle-item" id="toggle-studied">
+                        <span class="toggle-label">📚 Has estudiado algo</span>
+                        <div class="toggle-switch" data-field="studied"></div>
+                    </div>
+
+                    <div class="toggle-item" id="toggle-slept-early">
+                        <span class="toggle-label">😴 Te has ido pronto a la cama</span>
+                        <div class="toggle-switch" data-field="slept_early"></div>
+                    </div>
+                </div>
+
+                <button class="save-btn" id="saveBtn">Guardar</button>
+
+                <div class="message" id="message"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
