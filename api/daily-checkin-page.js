@@ -7,7 +7,7 @@ const path = require('path');
 module.exports = async (req, res) => {
     try {
         // Check if requesting the JS file
-        if (req.url === '/daily-checkin/app.js') {
+        if (req.url === '/daily-checkin/app.js' || req.url.endsWith('/app.js')) {
             const jsPath = path.join(__dirname, '../daily-checkin/public/app.js');
             const jsContent = fs.readFileSync(jsPath, 'utf8');
             res.setHeader('Content-Type', 'application/javascript');

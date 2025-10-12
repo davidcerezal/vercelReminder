@@ -24,6 +24,10 @@
     {
       "source": "/daily-checkin",
       "destination": "/api/daily-checkin-page"
+    },
+    {
+      "source": "/daily-checkin/app.js",
+      "destination": "/api/daily-checkin-page"
     }
   ]
 }
