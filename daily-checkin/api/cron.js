@@ -9,6 +9,9 @@ const telegram = require('../lib/telegram');
  * Schedule:
  * - 22:00 (10 PM) Monday-Thursday: First reminder
  * - 23:00 (11 PM) Monday-Thursday: Second reminder (only if no log exists)
+ *
+ * Query parameters:
+ * - force=true: Send reminder regardless of time or weekday
  */
 module.exports = async (req, res) => {
   try {
@@ -17,8 +20,12 @@ module.exports = async (req, res) => {
     const todayStr = dateUtils.getTodayString(timezone);
     const isWeekday = dateUtils.isWeekday(timezone);
 
-    // Only send reminders Monday to Thursday
-    if (!isWeekday) {
+    // Check for force parameter (supports query string or body)
+    const forceParam = req.query?.force || req.body?.force;
+    const isForced = forceParam === 'true' || forceParam === true;
+
+    // Only send reminders Monday to Thursday (unless forced)
+    if (!isWeekday && !isForced) {
       return res.status(200).json({
         success: true,
         message: 'No reminder sent - not a weekday',
@@ -32,8 +39,13 @@ module.exports = async (req, res) => {
     let shouldSend = false;
     let isFirstReminder = true;
 
+    if (isForced) {
+      // Manual trigger - always send as first reminder
+      shouldSend = true;
+      isFirstReminder = true;
+    }
     // 22:00 (10 PM) - Always send first reminder
-    if (currentHour === 22) {
+    else if (currentHour === 22) {
       shouldSend = true;
       isFirstReminder = true;
     }

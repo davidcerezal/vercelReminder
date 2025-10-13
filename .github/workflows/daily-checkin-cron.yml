@@ -3,9 +3,9 @@ name: Daily Check-In Cron
 on:
   schedule:
     # 22:00 (10 PM) Europe/Madrid (20:00 UTC in winter, 21:00 UTC in summer)
-    - cron: '0 20 * * 1-4'  # Monday-Thursday at 20:00 UTC (22:00 Madrid winter)
+    - cron: '0 21 * * 1-4'  # Monday-Thursday at 21:00 UTC (22:00 Madrid summer)
     # 23:00 (11 PM) Europe/Madrid (21:00 UTC in winter, 22:00 UTC in summer)
-    - cron: '0 21 * * 1-4'  # Monday-Thursday at 21:00 UTC (23:00 Madrid winter)
+    - cron: '0 22 * * 1-4'  # Monday-Thursday at 22:00 UTC (23:00 Madrid summer)
   workflow_dispatch: # Allows manual execution
 
 jobs:
