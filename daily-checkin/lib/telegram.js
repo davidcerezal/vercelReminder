@@ -19,10 +19,17 @@ async function sendReminder(message) {
 
   try {
     const bot = new TelegramBot(token);
+    const baseUrl = process.env.VERCEL_APP_URL || 'http://localhost:3000';
+    const checkinUrl = `${baseUrl}/daily-checkin`;
 
     await bot.sendMessage(chatId, message, {
       parse_mode: 'HTML',
-      disable_web_page_preview: true
+      disable_web_page_preview: false,
+      reply_markup: {
+        inline_keyboard: [[
+          { text: '✅ Completar Check-In', url: checkinUrl }
+        ]]
+      }
     });
 
     console.log('Daily check-in reminder sent via Telegram');
