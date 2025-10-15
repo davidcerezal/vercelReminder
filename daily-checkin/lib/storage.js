@@ -1,16 +1,29 @@
-const { kv } = require('@vercel/kv');
+const { createClient } = require('redis');
 
 const DEFAULT_TIMEZONE = 'Europe/Madrid';
 const TIMEZONE_KEY = 'daily-checkin:timezone';
 const LOG_KEY_PREFIX = 'daily-checkin:log:';
 
+// Create Redis client
+let redisClient = null;
+
+async function getRedisClient() {
+  if (!redisClient) {
+    redisClient = await createClient({
+      url: process.env.REDIS_URL
+    }).connect();
+  }
+  return redisClient;
+}
+
 /**
  * Initialize storage with default timezone if not set
  */
 async function initStorage() {
-  const timezone = await kv.get(TIMEZONE_KEY);
+  const redis = await getRedisClient();
+  const timezone = await redis.get(TIMEZONE_KEY);
   if (!timezone) {
-    await kv.set(TIMEZONE_KEY, DEFAULT_TIMEZONE);
+    await redis.set(TIMEZONE_KEY, DEFAULT_TIMEZONE);
   }
 }
 
@@ -20,15 +33,17 @@ async function initStorage() {
  */
 async function readData() {
   await initStorage();
-  const timezone = await kv.get(TIMEZONE_KEY) || DEFAULT_TIMEZONE;
+  const redis = await getRedisClient();
+  const timezone = await redis.get(TIMEZONE_KEY) || DEFAULT_TIMEZONE;
 
   // Get all log keys
-  const keys = await kv.keys(`${LOG_KEY_PREFIX}*`);
+  const keys = await redis.keys(`${LOG_KEY_PREFIX}*`);
   const logs = {};
 
   for (const key of keys) {
     const date = key.replace(LOG_KEY_PREFIX, '');
-    logs[date] = await kv.get(key);
+    const value = await redis.get(key);
+    logs[date] = value ? JSON.parse(value) : null;
   }
 
   return { timezone, logs };
@@ -39,13 +54,15 @@ async function readData() {
  * @deprecated Use specific set functions instead
  */
 async function writeData(data) {
+  const redis = await getRedisClient();
+
   if (data.timezone) {
-    await kv.set(TIMEZONE_KEY, data.timezone);
+    await redis.set(TIMEZONE_KEY, data.timezone);
   }
 
   if (data.logs) {
     for (const [date, log] of Object.entries(data.logs)) {
-      await kv.set(`${LOG_KEY_PREFIX}${date}`, log);
+      await redis.set(`${LOG_KEY_PREFIX}${date}`, JSON.stringify(log));
     }
   }
 }
@@ -54,14 +71,17 @@ async function writeData(data) {
  * Get log entry for a specific date (YYYY-MM-DD)
  */
 async function getLog(date) {
-  const log = await kv.get(`${LOG_KEY_PREFIX}${date}`);
-  return log || null;
+  const redis = await getRedisClient();
+  const value = await redis.get(`${LOG_KEY_PREFIX}${date}`);
+  return value ? JSON.parse(value) : null;
 }
 
 /**
  * Save or update log entry for a specific date
  */
 async function saveLog(date, logEntry) {
+  const redis = await getRedisClient();
+
   const entry = {
     eaten_well: !!logEntry.eaten_well,
     did_sport: !!logEntry.did_sport,
@@ -70,7 +90,7 @@ async function saveLog(date, logEntry) {
     saved_at: new Date().toISOString()
   };
 
-  await kv.set(`${LOG_KEY_PREFIX}${date}`, entry);
+  await redis.set(`${LOG_KEY_PREFIX}${date}`, JSON.stringify(entry));
 
   return entry;
 }
@@ -79,14 +99,17 @@ async function saveLog(date, logEntry) {
  * Get all logs for a specific month (YYYY-MM)
  */
 async function getMonthLogs(yearMonth) {
+  const redis = await getRedisClient();
+
   // Get all log keys that match the month pattern
   const pattern = `${LOG_KEY_PREFIX}${yearMonth}*`;
-  const keys = await kv.keys(pattern);
+  const keys = await redis.keys(pattern);
   const logs = {};
 
   for (const key of keys) {
     const date = key.replace(LOG_KEY_PREFIX, '');
-    logs[date] = await kv.get(key);
+    const value = await redis.get(key);
+    logs[date] = value ? JSON.parse(value) : null;
   }
 
   return logs;
@@ -96,14 +119,17 @@ async function getMonthLogs(yearMonth) {
  * Get logs within a date range
  */
 async function getLogsByRange(startDate, endDate) {
+  const redis = await getRedisClient();
+
   // Get all log keys
-  const keys = await kv.keys(`${LOG_KEY_PREFIX}*`);
+  const keys = await redis.keys(`${LOG_KEY_PREFIX}*`);
   const logs = {};
 
   for (const key of keys) {
     const date = key.replace(LOG_KEY_PREFIX, '');
     if (date >= startDate && date <= endDate) {
-      logs[date] = await kv.get(key);
+      const value = await redis.get(key);
+      logs[date] = value ? JSON.parse(value) : null;
     }
   }
 
@@ -114,19 +140,21 @@ async function getLogsByRange(startDate, endDate) {
  * Check if log exists for a specific date
  */
 async function hasLog(date) {
-  const log = await kv.get(`${LOG_KEY_PREFIX}${date}`);
-  return log !== null;
+  const redis = await getRedisClient();
+  const value = await redis.get(`${LOG_KEY_PREFIX}${date}`);
+  return value !== null;
 }
 
 /**
  * Delete log for a specific date
  */
 async function deleteLog(date) {
+  const redis = await getRedisClient();
   const key = `${LOG_KEY_PREFIX}${date}`;
-  const exists = await kv.get(key);
+  const exists = await redis.get(key);
 
   if (exists) {
-    await kv.del(key);
+    await redis.del(key);
     return true;
   }
   return false;
@@ -137,7 +165,8 @@ async function deleteLog(date) {
  */
 async function getTimezone() {
   await initStorage();
-  const timezone = await kv.get(TIMEZONE_KEY);
+  const redis = await getRedisClient();
+  const timezone = await redis.get(TIMEZONE_KEY);
   return timezone || DEFAULT_TIMEZONE;
 }
 
