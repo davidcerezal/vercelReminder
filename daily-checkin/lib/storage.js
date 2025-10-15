@@ -1,55 +1,67 @@
-const fs = require('fs').promises;
-const path = require('path');
+const { kv } = require('@vercel/kv');
 
-const DATA_FILE = path.join(__dirname, '../../data/daily-checkin.json');
 const DEFAULT_TIMEZONE = 'Europe/Madrid';
+const TIMEZONE_KEY = 'daily-checkin:timezone';
+const LOG_KEY_PREFIX = 'daily-checkin:log:';
 
 /**
- * Initialize storage file if it doesn't exist
+ * Initialize storage with default timezone if not set
  */
 async function initStorage() {
-  try {
-    await fs.access(DATA_FILE);
-  } catch (error) {
-    // File doesn't exist, create it with default structure
-    const defaultData = {
-      timezone: DEFAULT_TIMEZONE,
-      logs: {}
-    };
-    await fs.writeFile(DATA_FILE, JSON.stringify(defaultData, null, 2), 'utf8');
+  const timezone = await kv.get(TIMEZONE_KEY);
+  if (!timezone) {
+    await kv.set(TIMEZONE_KEY, DEFAULT_TIMEZONE);
   }
 }
 
 /**
- * Read all data from storage
+ * Read all data from storage (legacy compatibility - not efficient for Redis)
+ * @deprecated Use specific get functions instead
  */
 async function readData() {
   await initStorage();
-  const content = await fs.readFile(DATA_FILE, 'utf8');
-  return JSON.parse(content);
+  const timezone = await kv.get(TIMEZONE_KEY) || DEFAULT_TIMEZONE;
+
+  // Get all log keys
+  const keys = await kv.keys(`${LOG_KEY_PREFIX}*`);
+  const logs = {};
+
+  for (const key of keys) {
+    const date = key.replace(LOG_KEY_PREFIX, '');
+    logs[date] = await kv.get(key);
+  }
+
+  return { timezone, logs };
 }
 
 /**
- * Write data to storage
+ * Write data to storage (legacy compatibility - not efficient for Redis)
+ * @deprecated Use specific set functions instead
  */
 async function writeData(data) {
-  await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+  if (data.timezone) {
+    await kv.set(TIMEZONE_KEY, data.timezone);
+  }
+
+  if (data.logs) {
+    for (const [date, log] of Object.entries(data.logs)) {
+      await kv.set(`${LOG_KEY_PREFIX}${date}`, log);
+    }
+  }
 }
 
 /**
  * Get log entry for a specific date (YYYY-MM-DD)
  */
 async function getLog(date) {
-  const data = await readData();
-  return data.logs[date] || null;
+  const log = await kv.get(`${LOG_KEY_PREFIX}${date}`);
+  return log || null;
 }
 
 /**
  * Save or update log entry for a specific date
  */
 async function saveLog(date, logEntry) {
-  const data = await readData();
-
   const entry = {
     eaten_well: !!logEntry.eaten_well,
     did_sport: !!logEntry.did_sport,
@@ -58,8 +70,7 @@ async function saveLog(date, logEntry) {
     saved_at: new Date().toISOString()
   };
 
-  data.logs[date] = entry;
-  await writeData(data);
+  await kv.set(`${LOG_KEY_PREFIX}${date}`, entry);
 
   return entry;
 }
@@ -68,14 +79,15 @@ async function saveLog(date, logEntry) {
  * Get all logs for a specific month (YYYY-MM)
  */
 async function getMonthLogs(yearMonth) {
-  const data = await readData();
+  // Get all log keys that match the month pattern
+  const pattern = `${LOG_KEY_PREFIX}${yearMonth}*`;
+  const keys = await kv.keys(pattern);
   const logs = {};
 
-  Object.keys(data.logs).forEach(date => {
-    if (date.startsWith(yearMonth)) {
-      logs[date] = data.logs[date];
-    }
-  });
+  for (const key of keys) {
+    const date = key.replace(LOG_KEY_PREFIX, '');
+    logs[date] = await kv.get(key);
+  }
 
   return logs;
 }
@@ -84,14 +96,16 @@ async function getMonthLogs(yearMonth) {
  * Get logs within a date range
  */
 async function getLogsByRange(startDate, endDate) {
-  const data = await readData();
+  // Get all log keys
+  const keys = await kv.keys(`${LOG_KEY_PREFIX}*`);
   const logs = {};
 
-  Object.keys(data.logs).forEach(date => {
+  for (const key of keys) {
+    const date = key.replace(LOG_KEY_PREFIX, '');
     if (date >= startDate && date <= endDate) {
-      logs[date] = data.logs[date];
+      logs[date] = await kv.get(key);
     }
-  });
+  }
 
   return logs;
 }
@@ -100,7 +114,7 @@ async function getLogsByRange(startDate, endDate) {
  * Check if log exists for a specific date
  */
 async function hasLog(date) {
-  const log = await getLog(date);
+  const log = await kv.get(`${LOG_KEY_PREFIX}${date}`);
   return log !== null;
 }
 
@@ -108,10 +122,11 @@ async function hasLog(date) {
  * Delete log for a specific date
  */
 async function deleteLog(date) {
-  const data = await readData();
-  if (data.logs[date]) {
-    delete data.logs[date];
-    await writeData(data);
+  const key = `${LOG_KEY_PREFIX}${date}`;
+  const exists = await kv.get(key);
+
+  if (exists) {
+    await kv.del(key);
     return true;
   }
   return false;
@@ -121,8 +136,9 @@ async function deleteLog(date) {
  * Get timezone configuration
  */
 async function getTimezone() {
-  const data = await readData();
-  return data.timezone || DEFAULT_TIMEZONE;
+  await initStorage();
+  const timezone = await kv.get(TIMEZONE_KEY);
+  return timezone || DEFAULT_TIMEZONE;
 }
 
 module.exports = {
