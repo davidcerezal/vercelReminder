@@ -22,8 +22,8 @@ Módulo independiente para registrar estado diario con cuestionario, calendario 
 - Click en cualquier día para ver/editar su registro
 
 ### 3. Recordatorios por Telegram
-- Lunes a Jueves a las 22:00 / 10 PM (Europe/Madrid)
-- Recordatorio adicional a las 23:00 / 11 PM si no hay registro
+- Lunes a Jueves a las 21:00 / 9 PM (Europe/Madrid)
+- Recordatorio adicional a las 22:00 / 10 PM si no hay registro
 - Usa bot de Telegram independiente
 
 ## Estructura de Archivos
@@ -112,8 +112,8 @@ Accede a `/daily-checkin` para ver:
 ## Cron Jobs
 
 Configurado en `.github/workflows/daily-checkin-cron.yml`:
-- 20:00 UTC (22:00 Madrid / 10 PM) Lunes-Jueves
-- 21:00 UTC (23:00 Madrid / 11 PM) Lunes-Jueves
+- 20:00 UTC (21:00 Madrid / 9 PM) Lunes-Jueves
+- 21:00 UTC (22:00 Madrid / 10 PM) Lunes-Jueves
 
 ## Independencia del Sistema Principal
 

@@ -38,40 +38,24 @@ async function handleCronJob(req, res) {
     // Check if today is the last working day of the month
     if (isLastWorkingDayOfMonth()) {
       console.log('Today is the last working day of the month - sending work hours reminder');
-      
+
       // Send email reminder
       const emailSent = await emailService.sendWorkHoursReminder();
       if (emailSent) {
         results.push('Work hours reminder email sent successfully');
-        await logExecution(true, 'Work hours reminder email sent successfully', { 
-          duration: `${Date.now() - startTime}ms`,
-          additionalInfo: { type: 'work_hours_email' }
-        });
       } else {
         results.push('Failed to send work hours reminder email');
-        await logExecution(false, 'Failed to send work hours reminder email', { 
-          duration: `${Date.now() - startTime}ms`,
-          additionalInfo: { type: 'work_hours_email' }
-        });
       }
-      
+
       // Send Telegram reminder
       const telegramSent = await telegramService.sendWorkHoursReminder();
       if (telegramSent) {
         results.push('Work hours reminder Telegram message sent successfully');
-        await logExecution(true, 'Work hours reminder Telegram message sent successfully', { 
-          duration: `${Date.now() - startTime}ms`,
-          additionalInfo: { type: 'work_hours_telegram' }
-        });
       } else {
         results.push('Failed to send work hours reminder Telegram message');
-        await logExecution(false, 'Failed to send work hours reminder Telegram message', { 
-          duration: `${Date.now() - startTime}ms`,
-          additionalInfo: { type: 'work_hours_telegram' }
-        });
       }
     }
-    
+
     // Check for birthdays
     console.log(`DEBUG: Current date for birthday check: ${today.toISOString()}`);
     console.log(`DEBUG: Local date: ${today.toLocaleDateString('es-ES')}`);
@@ -85,47 +69,40 @@ async function handleCronJob(req, res) {
     } else {
       console.log('DEBUG: No birthdays found for today');
     }
-    
+
     for (const birthday of todaysBirthdays) {
       console.log(`Sending birthday message for ${birthday.name}`);
       const birthdayMessageSent = await telegramService.sendBirthdayMessage(birthday.name, birthday.date);
 
       if (birthdayMessageSent) {
         results.push(`Birthday message sent for ${birthday.name}`);
-        await logExecution(true, `Birthday message sent for ${birthday.name}`, {
-          duration: `${Date.now() - startTime}ms`,
-          additionalInfo: { type: 'birthday', name: birthday.name }
-        });
       } else {
         results.push(`Failed to send birthday message for ${birthday.name}`);
-        await logExecution(false, `Failed to send birthday message for ${birthday.name}`, {
-          duration: `${Date.now() - startTime}ms`,
-          additionalInfo: { type: 'birthday', name: birthday.name }
-        });
       }
     }
-    
+
     if (results.length === 0) {
       results.push('No reminders to send today');
-      await logExecution(true, 'No reminders to send today', { 
-        duration: `${Date.now() - startTime}ms`,
-        additionalInfo: { type: 'no_activity' }
-      });
     }
-    
+
     const endTime = Date.now();
     const duration = `${endTime - startTime}ms`;
     const summary = results.join(', ');
-    
+
     console.log('Cron job completed:', results);
-    
-    // Log the final summary (only if there were multiple actions)
-    if (results.length > 1) {
-      await logExecution(true, `Cron job completed: ${summary}`, { 
-        duration: duration,
-        additionalInfo: { resultsCount: results.length, details: results, type: 'summary' }
-      });
-    }
+
+    // Log once at the end with all results
+    const finalLog = logExecution(true, `Cron completed: ${summary}`, {
+      duration: duration,
+      additionalInfo: {
+        resultsCount: results.length,
+        results: results,
+        type: 'cron_execution'
+      }
+    });
+
+    // Don't wait for logging to complete
+    finalLog.catch(err => console.error('Logging error:', err));
     
     res.status(200).json({
       success: true,
