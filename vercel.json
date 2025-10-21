@@ -12,10 +12,41 @@
     "api/daily-checkin-cron.js": {
       "maxDuration": 30
     },
+    "api/cleaning-plan.js": {
+      "maxDuration": 30
+    },
+    "api/cleaning-cron.js": {
+      "maxDuration": 60
+    },
+    "api/cleaning-plan-page.js": {
+      "maxDuration": 30
+    },
     "api/daily-checkin-page.js": {
       "maxDuration": 30
     }
   },
+  "crons": [
+    {
+      "path": "/api/daily-checkin-cron",
+      "schedule": "0 8,11,14,17,20,23 * * *"
+    },
+    {
+      "path": "/api/cleaning-cron",
+      "schedule": "0 19 * * 3"
+    },
+    {
+      "path": "/api/cleaning-cron",
+      "schedule": "0 20 * * 0"
+    },
+    {
+      "path": "/api/cleaning-cron",
+      "schedule": "0 21 * * 0"
+    },
+    {
+      "path": "/api/cleaning-cron",
+      "schedule": "0 20 28-31 * *"
+    }
+  ],
   "rewrites": [
     {
       "source": "/",
@@ -28,6 +59,14 @@
     {
       "source": "/daily-checkin/app.js",
       "destination": "/api/daily-checkin-page"
+    },
+    {
+      "source": "/cleaning-plan",
+      "destination": "/api/cleaning-plan-page"
+    },
+    {
+      "source": "/cleaning-plan/app.js",
+      "destination": "/api/cleaning-plan-page"
     }
   ]
 }

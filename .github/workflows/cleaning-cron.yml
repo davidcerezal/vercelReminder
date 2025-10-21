@@ -1,0 +1,46 @@
+name: Cleaning Plan Cron
+
+on:
+  schedule:
+    # Miércoles 19:00 Europe/Madrid (18:00 UTC in winter, 17:00 UTC in summer)
+    - cron: '0 17 * * 3'  # Wednesday at 17:00 UTC (19:00 Madrid summer)
+    - cron: '0 18 * * 3'  # Wednesday at 18:00 UTC (19:00 Madrid winter)
+
+    # Domingo 20:00 Europe/Madrid (19:00 UTC in winter, 18:00 UTC in summer)
+    - cron: '0 18 * * 0'  # Sunday at 18:00 UTC (20:00 Madrid summer)
+    - cron: '0 19 * * 0'  # Sunday at 19:00 UTC (20:00 Madrid winter)
+
+    # Domingo 21:00 Europe/Madrid (20:00 UTC in winter, 19:00 UTC in summer)
+    - cron: '0 19 * * 0'  # Sunday at 19:00 UTC (21:00 Madrid summer)
+    - cron: '0 20 * * 0'  # Sunday at 20:00 UTC (21:00 Madrid winter)
+
+    # Último día del mes 20:00 Europe/Madrid
+    - cron: '0 18 28-31 * *'  # Days 28-31 at 18:00 UTC (20:00 Madrid summer)
+    - cron: '0 19 28-31 * *'  # Days 28-31 at 19:00 UTC (20:00 Madrid winter)
+
+  workflow_dispatch: # Permite ejecución manual
+
+jobs:
+  cleaning-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Cleaning Cron
+        run: |
+          response=$(curl -s -w "HTTP_CODE:%{http_code}" \
+            -X POST ${{ secrets.VERCEL_APP_URL }}/api/cleaning-cron \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "User-Agent: GitHub-Actions-Cleaning-Cron/1.0")
+
+          http_code=$(echo "$response" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)
+          body=$(echo "$response" | sed 's/HTTP_CODE:[0-9]*$//')
+
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Cleaning cron executed successfully"
+          else
+            echo "❌ Cleaning cron failed with status $http_code"
+            exit 1
+          fi
