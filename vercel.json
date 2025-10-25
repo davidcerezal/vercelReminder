@@ -25,28 +25,6 @@
       "maxDuration": 30
     }
   },
-  "crons": [
-    {
-      "path": "/api/daily-checkin-cron",
-      "schedule": "0 8,11,14,17,20,23 * * *"
-    },
-    {
-      "path": "/api/cleaning-cron",
-      "schedule": "0 19 * * 3"
-    },
-    {
-      "path": "/api/cleaning-cron",
-      "schedule": "0 20 * * 0"
-    },
-    {
-      "path": "/api/cleaning-cron",
-      "schedule": "0 21 * * 0"
-    },
-    {
-      "path": "/api/cleaning-cron",
-      "schedule": "0 20 28-31 * *"
-    }
-  ],
   "rewrites": [
     {
       "source": "/",
