@@ -1,4 +1,4 @@
-const { CLEANING_TIMEZONE, PEOPLE, TASKS } = require('./config');
+const { CLEANING_TIMEZONE, PEOPLE, TASKS, DEADLINE, MIDWEEK_REMINDER, REPROGRAM_TIME, MONTHLY_SUMMARY } = require('./config');
 const {
   getWeekDeadlineDate,
   getReprogramDate,
@@ -334,6 +334,10 @@ module.exports = {
   PEOPLE,
   TASKS,
   PEOPLE_MAP,
+  DEADLINE,
+  MIDWEEK_REMINDER,
+  REPROGRAM_TIME,
+  MONTHLY_SUMMARY,
   getOrCreateWeek,
   setTaskCompletion,
   getWeekOverview,
