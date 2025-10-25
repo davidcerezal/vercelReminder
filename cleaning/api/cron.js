@@ -213,6 +213,9 @@ async function handleEvent(event, now) {
   }
 }
 
+/**
+ * Cleaning cron handler - manages cleaning task reminders and notifications
+ */
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
