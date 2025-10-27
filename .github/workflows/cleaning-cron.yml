@@ -11,7 +11,6 @@ on:
     - cron: '0 19 * * 0'  # Sunday at 19:00 UTC (20:00 Madrid winter)
 
     # Domingo 21:00 Europe/Madrid (20:00 UTC in winter, 19:00 UTC in summer)
-    - cron: '0 19 * * 0'  # Sunday at 19:00 UTC (21:00 Madrid summer)
     - cron: '0 20 * * 0'  # Sunday at 20:00 UTC (21:00 Madrid winter)
 
     # Último día del mes 20:00 Europe/Madrid

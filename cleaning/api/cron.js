@@ -24,22 +24,19 @@ const {
 } = require('../lib/notifications');
 
 function matchesSchedule(localDate, schedule) {
+  // Only check day/weekday, ignore time restrictions
   if (schedule.day === 'last') {
     const nextDay = new Date(localDate.getTime());
     nextDay.setUTCDate(nextDay.getUTCDate() + 1);
     if (nextDay.getUTCMonth() === localDate.getUTCMonth()) {
       return false;
     }
+    return true;
   } else if (typeof schedule.weekday === 'number') {
-    if (localDate.getUTCDay() !== schedule.weekday) {
-      return false;
-    }
+    return localDate.getUTCDay() === schedule.weekday;
   }
 
-  const hour = schedule.hour ?? 0;
-  const minute = schedule.minute ?? 0;
-
-  return localDate.getUTCHours() === hour && localDate.getUTCMinutes() === minute;
+  return false;
 }
 
 function getTodayString(localDate) {
