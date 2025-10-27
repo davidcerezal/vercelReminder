@@ -1,0 +1,34 @@
+name: Cleaning Midweek Reminder
+
+on:
+  schedule:
+    # Miércoles 19:00 Madrid - Midweek reminder (Telegram)
+    - cron: '0 17 * * 3'  # Wednesday at 17:00 UTC (19:00 Madrid summer)
+    - cron: '0 18 * * 3'  # Wednesday at 18:00 UTC (19:00 Madrid winter)
+
+  workflow_dispatch: # Permite ejecución manual
+
+jobs:
+  midweek-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Midweek Reminder
+        run: |
+          response=$(curl -s -w "HTTP_CODE:%{http_code}" \
+            -X POST "${{ secrets.VERCEL_APP_URL }}/api/cleaning-cron?event=midweek" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "User-Agent: GitHub-Actions-Cleaning-Midweek/1.0")
+
+          http_code=$(echo "$response" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)
+          body=$(echo "$response" | sed 's/HTTP_CODE:[0-9]*$//')
+
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Midweek reminder executed successfully"
+          else
+            echo "❌ Midweek reminder failed with status $http_code"
+            exit 1
+          fi

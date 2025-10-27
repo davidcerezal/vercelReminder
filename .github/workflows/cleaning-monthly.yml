@@ -1,0 +1,34 @@
+name: Cleaning Monthly Summary
+
+on:
+  schedule:
+    # Último día del mes 20:00 Madrid - Monthly summary (Email)
+    - cron: '0 18 28-31 * *'  # Days 28-31 at 18:00 UTC (20:00 Madrid summer)
+    - cron: '0 19 28-31 * *'  # Days 28-31 at 19:00 UTC (20:00 Madrid winter)
+
+  workflow_dispatch: # Permite ejecución manual
+
+jobs:
+  monthly-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Monthly Summary
+        run: |
+          response=$(curl -s -w "HTTP_CODE:%{http_code}" \
+            -X POST "${{ secrets.VERCEL_APP_URL }}/api/cleaning-cron?event=monthly-summary" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "User-Agent: GitHub-Actions-Cleaning-Monthly/1.0")
+
+          http_code=$(echo "$response" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)
+          body=$(echo "$response" | sed 's/HTTP_CODE:[0-9]*$//')
+
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Monthly summary executed successfully"
+          else
+            echo "❌ Monthly summary failed with status $http_code"
+            exit 1
+          fi

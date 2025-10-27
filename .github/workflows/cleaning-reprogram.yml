@@ -1,0 +1,34 @@
+name: Cleaning Reprogram Tasks
+
+on:
+  schedule:
+    # Domingo 21:00 Madrid - Reprogram missed tasks
+    - cron: '0 19 * * 0'  # Sunday at 19:00 UTC (21:00 Madrid summer)
+    - cron: '0 20 * * 0'  # Sunday at 20:00 UTC (21:00 Madrid winter)
+
+  workflow_dispatch: # Permite ejecución manual
+
+jobs:
+  reprogram-tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Reprogram Tasks
+        run: |
+          response=$(curl -s -w "HTTP_CODE:%{http_code}" \
+            -X POST "${{ secrets.VERCEL_APP_URL }}/api/cleaning-cron?event=reprogram" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "User-Agent: GitHub-Actions-Cleaning-Reprogram/1.0")
+
+          http_code=$(echo "$response" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)
+          body=$(echo "$response" | sed 's/HTTP_CODE:[0-9]*$//')
+
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Reprogram tasks executed successfully"
+          else
+            echo "❌ Reprogram tasks failed with status $http_code"
+            exit 1
+          fi
