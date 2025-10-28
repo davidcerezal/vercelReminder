@@ -97,7 +97,8 @@ async function sendTelegramReminder(personId, templateBuilder) {
 
 function buildMidweekMessage(person, tasks) {
   const taskList = buildTaskListMessage(tasks);
-  return `¡Hola, ${person.name}! Recordatorio de mitad de semana:\n${taskList}\n\nLímite: domingo 20:00.\nMárcalas en la app cuando termines.`;
+  const appUrl = process.env.VERCEL_APP_URL || 'https://reminderdave.vercel.app';
+  return `¡Hola, ${person.name}! Recordatorio de mitad de semana:\n\n${taskList}\n\n🕐 Límite: domingo 20:00\n\n📋 Marca tus tareas aquí:\n${appUrl}/cleaning-plan`;
 }
 
 async function sendMidweekTelegramReminder(personId, tasks) {
@@ -121,6 +122,7 @@ async function sendWeekendEmail(personId, tasks, deadlineIso) {
 
   const transporter = getMailer();
   const deadlineFormatted = formatDisplayDateTime(new Date(deadlineIso), 'es-ES', CLEANING_TIMEZONE);
+  const appUrl = process.env.VERCEL_APP_URL || 'https://reminderdave.vercel.app';
 
   const taskItems = tasks
     .map(task => `<li><strong>${task.title}</strong></li>`)
@@ -133,6 +135,13 @@ async function sendWeekendEmail(personId, tasks, deadlineIso) {
       <ul>${taskItems}</ul>
       <p>Si no las completas hoy, se reprogramarán automáticamente para la semana siguiente.</p>
       <p style="color: #64748b; font-size: 0.9rem;">Límite formal: ${deadlineFormatted}</p>
+
+      <div style="margin-top: 30px; text-align: center;">
+        <a href="${appUrl}/cleaning-plan"
+           style="display: inline-block; padding: 12px 24px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+          📋 Marcar tareas como completadas
+        </a>
+      </div>
     </div>
   `;
 
