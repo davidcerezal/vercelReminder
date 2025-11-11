@@ -36,51 +36,26 @@ module.exports = async (req, res) => {
     // Check if log already exists for today
     const hasLog = await storage.hasLog(todayStr);
 
-    let shouldSend = false;
-    let isFirstReminder = true;
+    // Determine if it's a first or second reminder based on existing log
+    const isFirstReminder = !hasLog;
 
-    if (isForced) {
-      // Manual trigger - always send as first reminder
-      shouldSend = true;
-      isFirstReminder = true;
-    }
-    // 22:00 (10 PM) - Always send first reminder
-    else if (currentHour === 22) {
-      shouldSend = true;
-      isFirstReminder = true;
-    }
-    // 23:00 (11 PM) - Only send if no log exists (second reminder)
-    else if (currentHour === 23 && !hasLog) {
-      shouldSend = true;
-      isFirstReminder = false;
-    }
+    // Always send reminder when called
+    const message = telegram.createReminderMessage(isFirstReminder);
+    const result = await telegram.sendReminder(message);
 
-    if (shouldSend) {
-      const message = telegram.createReminderMessage(isFirstReminder);
-      const result = await telegram.sendReminder(message);
-
-      if (result.success) {
-        return res.status(200).json({
-          success: true,
-          message: `Reminder sent at ${currentHour}:00`,
-          date: todayStr,
-          reminderType: isFirstReminder ? 'first' : 'second',
-          hasLog
-        });
-      } else {
-        return res.status(500).json({
-          success: false,
-          error: result.error,
-          message: 'Failed to send reminder'
-        });
-      }
-    } else {
+    if (result.success) {
       return res.status(200).json({
         success: true,
-        message: 'No reminder needed at this time',
-        currentHour,
-        hasLog,
-        date: todayStr
+        message: `Reminder sent at ${currentHour}:00`,
+        date: todayStr,
+        reminderType: isFirstReminder ? 'first' : 'second',
+        hasLog
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        error: result.error,
+        message: 'Failed to send reminder'
       });
     }
   } catch (error) {
